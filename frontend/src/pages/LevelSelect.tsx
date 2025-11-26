@@ -1,52 +1,74 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/LevelSelect.css';
+import ThemeSelector from '../components/pages/level-select/ThemeSelector';
+import LevelGrid from '../components/pages/level-select/LevelGrid';
+import LevelHeader from '../components/pages/level-select/LevelHeader';
+import ThemeHeader from '../components/pages/level-select/ThemeHeader';
+import type { Theme, Level } from '../types/game';
+import { createThemes } from '../data/gameData';
+import { getDifficultyColor } from '../utils/gameUtils';
+import { useGameProgress } from '../hooks/useGameProgress';
 
 function LevelSelect() {
   const navigate = useNavigate();
+  const { gameProgress } = useGameProgress();
+  const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null);
 
+  // 根据游戏进度动态生成主题数据
+  const themes = createThemes(gameProgress);
+
+  const handleThemeSelect = (theme: Theme) => {
+    setSelectedTheme(theme);
+  };
+
+  const handleLevelSelect = (level: Level) => {
+    navigate('/matching_room', {
+      state: {
+        level: level.id,
+        levelData: level,
+        theme: selectedTheme?.id,
+        themeName: selectedTheme?.name
+      }
+    });
+  };
+
+  const handleBackToThemes = () => {
+    setSelectedTheme(null);
+  };
+
+  if (selectedTheme) {
+    // 显示关卡选择界面
+    return (
+      <div className="level-select-container">
+        <LevelHeader theme={selectedTheme} />
+
+        <LevelGrid
+          levels={selectedTheme.levels}
+          onLevelSelect={handleLevelSelect}
+          getDifficultyColor={getDifficultyColor}
+        />
+
+        <button className="back-button" onClick={handleBackToThemes}>
+          ← 返回主题选择
+        </button>
+      </div>
+    );
+  }
+
+  // 显示主题选择界面
   return (
     <div className="level-select-container">
-      <div className="level-select-header">
-        <h1>选择关卡</h1>
-        <p>选择一个关卡开始挑战 — 每个关卡为不同难度的匹配练习。</p>
-      </div>
+      <ThemeHeader />
 
-      <div className="level-grid">
-        <div className="level-card">
-          <div className="level-title">关卡 1 · 十以内加减法</div>
-          <div className="level-desc">左右两侧均为十以内的加减法表达式，只有同色且计算结果相同的配对才算成功。</div>
-          <div className="level-meta">
-            <div className="difficulty">简单</div>
-            <div className="level-actions">
-              <button className="level-button" onClick={() => navigate('/matching_room', { state: { level: 1 } })}>开始</button>
-            </div>
-          </div>
-        </div>
+      <ThemeSelector
+        themes={themes}
+        onThemeSelect={handleThemeSelect}
+      />
 
-        <div className="level-card level-locked">
-          <div className="level-title">关卡 2 · 两位数加减</div>
-          <div className="level-desc">（占位）更高难度的算术匹配，之后解锁。</div>
-          <div className="level-meta">
-            <div className="difficulty">中等</div>
-            <div className="level-actions">
-              <button className="level-button" onClick={() => navigate('/matching_room')}>使用默认</button>
-            </div>
-          </div>
-        </div>
-
-        <div className="level-card level-locked">
-          <div className="level-title">关卡 3 · 时间挑战</div>
-          <div className="level-desc">（占位）在限定时间内完成尽可能多的配对。</div>
-          <div className="level-meta">
-            <div className="difficulty">高级</div>
-            <div className="level-actions">
-              <button className="level-button" onClick={() => navigate('/matching_room')}>使用默认</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <button className="back-button" onClick={() => navigate('/')}>返回首页</button>
+      <button className="back-button" onClick={() => navigate('/')}>
+        ← 返回首页
+      </button>
     </div>
   );
 }
