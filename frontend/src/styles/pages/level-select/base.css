@@ -6,6 +6,9 @@
   position: relative;
   overflow: hidden;
   padding: 2rem;
+  /* 悬浮按钮不需要预留空间 */
+  padding-top: 5rem;
+  transition: all 0.3s ease;
 }
 
 .level-select-container::before {

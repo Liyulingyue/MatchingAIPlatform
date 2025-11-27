@@ -162,16 +162,16 @@
 }
 
 .level-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-gradient);
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 25px;
-  font-size: 1.1rem;
+  padding: var(--btn-padding-md);
+  border-radius: var(--btn-border-radius-sm);
+  font-size: var(--btn-font-size-md);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+  transition: var(--btn-transition);
+  box-shadow: 0 6px 20px var(--primary-shadow);
   position: relative;
   overflow: hidden;
   text-transform: uppercase;
@@ -195,7 +195,7 @@
 
 .level-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 10px 30px var(--primary-shadow-hover);
 }
 
 .level-button:active:not(:disabled) {
